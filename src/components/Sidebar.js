@@ -43,7 +43,7 @@ const Sidebar = () => {
         const response = await axios.get('https://apiuserisena.onrender.com/token');
         config.headers.Authorization = `Bearer ${response.data.accessToken}`;
         setToken(response.data.accessToken);
-        const decoded = jwtDecode(response.data.accessToken);
+        const decoded = jwt_decode(response.data.accessToken);
         setUsername(decoded.username);
         setExpire(decoded.exp);
         setLoading(false);
