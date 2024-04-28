@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NavLink, useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { IoPerson, IoPricetag, IoHome } from 'react-icons/io5';
-import { jwtDecode } from "jwt-decode";
+import  jwt_decode  from 'jwt-decode';
 
 
 const Sidebar = () => {
@@ -22,7 +22,7 @@ const Sidebar = () => {
     try {
       const response = await axios.get('https://apiuserisena.onrender.com/token');
       setToken(response.data.accessToken);
-      const decoded = jwtDecode(response.data.accessToken);
+      const decoded = jwt_decode(response.data.accessToken);
       setUsername(decoded.username);
       setExpire(decoded.exp);
       setLoading(false);
