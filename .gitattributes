@@ -1,0 +1,6 @@
+# Set default behavior for all files
+* text=auto
+
+# Explicitly declare text files you want to always be normalized and converted to CRLF
+*.txt text eol=crlf
+
