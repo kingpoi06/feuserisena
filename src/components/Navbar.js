@@ -11,7 +11,7 @@ const Navbar = () => {
 
   const Logout = async() => {
     try {
-      await axios.delete(`http://27.112.78.28:5000/logout`);
+      await axios.delete(`https://apiisena.site/pasiens/logout`);
       navigate("/")
     }catch (error){
       console.log(error);
