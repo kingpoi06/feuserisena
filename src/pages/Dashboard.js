@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-// import jwt_decode from "jwt-decode";
-import  jwtDecode  from 'jwt-decode';
+import jwtDecode from 'jwt-decode';
 import { IoPerson } from "react-icons/io5";
 import Layout from "./Layout";
 import { useNavigate } from 'react-router-dom';
@@ -13,14 +12,10 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const [expire, setExpire] = useState('');
-  // const refreshToken = Cookies.get('refreshToken');
-  
 
   useEffect(() => {
     refreshToken();
-    
   }, []);
-  
 
   const refreshToken = async () => {
     try {
@@ -31,14 +26,14 @@ const Dashboard = () => {
         navigate("/");
         return;
       }
-  
+
       // Kirim permintaan untuk memperbarui token dengan refresh token
       const response = await axios.get('https://apiuserisena.onrender.com/token', {
         headers: {
           Authorization: `Bearer ${refreshToken}`
         }
       });
-  
+
       // Perbarui state dengan token baru
       setToken(response.data.accessToken);
       const decoded = jwtDecode(response.data.accessToken);
@@ -54,26 +49,36 @@ const Dashboard = () => {
       }
     }
   }
-  
 
-  const axiosJWT = axios.create();
-
-  axiosJWT.interceptors.request.use(async(config) => {
+  // Intercept request untuk memperbarui token
+  axios.interceptors.request.use(async (config) => {
     const currentDate = new Date();
-    if(expire * 1000 < currentDate.getTime()){
-        const response = await axios.get('https://apiuserisena.onrender.com/token');
+    if (expire * 1000 < currentDate.getTime()) {
+      // Ambil refresh token dari cookie
+      const refreshToken = Cookies.get('refreshToken');
+      if (refreshToken) {
+        // Kirim permintaan untuk memperbarui token dengan refresh token
+        const response = await axios.get('https://apiuserisena.onrender.com/token', {
+          headers: {
+            Authorization: `Bearer ${refreshToken}`
+          }
+        });
+
+        // Perbarui token dalam config
         config.headers.Authorization = `Bearer ${response.data.accessToken}`;
         setToken(response.data.accessToken);
         const decoded = jwtDecode(response.data.accessToken);
         setUsername(decoded.username);
         setExpire(decoded.exp);
-        setLoading(false);
+      } else {
+        // Token tidak tersedia, arahkan pengguna untuk login kembali
+        navigate("/");
+      }
     }
     return config;
   }, (error) => {
     return Promise.reject(error);
-  })
-  
+  });
 
   return (
     <Layout>
