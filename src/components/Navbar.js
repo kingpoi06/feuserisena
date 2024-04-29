@@ -11,7 +11,7 @@ const Navbar = () => {
 
   const Logout = async() => {
     try {
-      await axios.delete(`https://apiisena.site/pasiens/logout`);
+      await axios.delete(`https://isenaauth.onrender.com/logout`);
       navigate("/")
     }catch (error){
       console.log(error);

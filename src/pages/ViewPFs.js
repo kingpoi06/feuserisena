@@ -56,7 +56,7 @@ const ViewPFs = () => {
 
     const refreshToken = async () => {
         try {
-          const response = await axios.get('https://apiuserisena.onrender.com/token');
+          const response = await axios.get('https://isenaauth.onrender.com/token');
           setToken(response.data.accessToken);
           const decoded = jwtDecode(response.data.accessToken);
           setUsername(decoded.username);
@@ -76,7 +76,7 @@ const ViewPFs = () => {
       axiosJWT.interceptors.request.use(async(config) => {
         const currentDate = new Date();
         if(expire * 1000 < currentDate.getTime()){
-            const response = await axios.get('https://apiuserisena.onrender.com/token');
+            const response = await axios.get('https://isenaauth.onrender.com/token');
             config.headers.Authorization = `Bearer ${response.data.accessToken}`;
             setToken(response.data.accessToken);
             const decoded = jwtDecode(response.data.accessToken);
@@ -91,7 +91,7 @@ const ViewPFs = () => {
       
     const getPFsById = async (uuid) => {
         try {
-            const response = await axiosJWT.get(`https://apiuserisena.onrender.com/pfs/${uuid}`, {
+            const response = await axiosJWT.get(`https://isenaauth.onrender.com/pfs/${uuid}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

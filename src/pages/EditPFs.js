@@ -58,7 +58,7 @@ const EditPFs = () => {
 
   const refreshToken = async () => {
     try {
-      const response = await axios.get('https://apiuserisena.onrender.com/token');
+      const response = await axios.get('https://isenaauth.onrender.com/token');
       setToken(response.data.accessToken);
       const decoded = jwtDecode(response.data.accessToken);
       setUsername(decoded.username);
@@ -78,7 +78,7 @@ const EditPFs = () => {
   axiosJWT.interceptors.request.use(async(config) => {
     const currentDate = new Date();
     if(expire * 1000 < currentDate.getTime()){
-        const response = await axios.get('https://apiuserisena.onrender.com/token');
+        const response = await axios.get('https://isenaauth.onrender.com/token');
         config.headers.Authorization = `Bearer ${response.data.accessToken}`;
         setToken(response.data.accessToken);
         const decoded = jwtDecode(response.data.accessToken);
@@ -93,7 +93,7 @@ const EditPFs = () => {
 
   const getPFsById = async (uuid) => { // Terima uuid sebagai argumen
     try {
-      const response = await axiosJWT.get(`https://apiuserisena.onrender.com/pfs/${uuid}`, {
+      const response = await axiosJWT.get(`https://isenaauth.onrender.com/pfs/${uuid}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -153,7 +153,7 @@ const EditPFs = () => {
         throw new Error("Silahkan lengkapi semua data FORM");
       }
   
-      await axiosJWT.put(`https://apiuserisena.onrender.com/pasiens/${uuid}`, {
+      await axiosJWT.put(`https://isenaauth.onrender.com/pasiens/${uuid}`, {
         unitpelayanan,
         keluhanutama, keluhantambahan, riwayatpenyakitsekarang, 
         riwayatpenyakitdahulu, riwayatpenyakitkeluarga, riwayatalergi, 

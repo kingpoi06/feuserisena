@@ -25,7 +25,7 @@ const Pasien = () => {
 
   const refreshToken = async () => {
     try {
-      const response = await axios.get('https://apiuserisena.onrender.com/token');
+      const response = await axios.get('https://isenaauth.onrender.com/token');
       setToken(response.data.accessToken);
       const decoded = jwtDecode(response.data.accessToken);
       setUsername(decoded.username);
@@ -45,7 +45,7 @@ const Pasien = () => {
   axiosJWT.interceptors.request.use(async(config) => {
     const currentDate = new Date();
     if(expire * 1000 < currentDate.getTime()){
-        const response = await axios.get('https://apiuserisena.onrender.com/token');
+        const response = await axios.get('https://isenaauth.onrender.com/token');
         config.headers.Authorization = `Bearer ${response.data.accessToken}`;
         setToken(response.data.accessToken);
         const decoded = jwtDecode(response.data.accessToken);
@@ -59,7 +59,7 @@ const Pasien = () => {
   })
 
   const getPasiens =  async()=>{
-    const response = await axiosJWT.get('https://apiuserisena.onrender.com/pasiens',{
+    const response = await axiosJWT.get('https://isenaauth.onrender.com/pasiens',{
         headers:{
             Authorization: `Bearer ${token}`
         }
@@ -74,7 +74,7 @@ const Pasien = () => {
         return;
       }
   
-      await axiosJWT.delete(`https://apiuserisena.onrender.com/pasiens/${id}`, {
+      await axiosJWT.delete(`https://isenaauth.onrender.com/pasiens/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

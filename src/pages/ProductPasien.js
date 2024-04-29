@@ -39,7 +39,7 @@ const ProductPasien = () => {
 
   const refreshToken = async () => {
     try {
-      const response = await axios.get('https://apiuserisena.onrender.com/token');
+      const response = await axios.get('https://isenaauth.onrender.com/token');
       setToken(response.data.accessToken);
       const decoded = jwtDecode(response.data.accessToken);
       setUsername(decoded.username);
@@ -59,7 +59,7 @@ const ProductPasien = () => {
   axiosJWT.interceptors.request.use(async(config) => {
     const currentDate = new Date();
     if(expire * 1000 < currentDate.getTime()){
-        const response = await axios.get('https://apiuserisena.onrender.com/token');
+        const response = await axios.get('https://isenaauth.onrender.com/token');
         config.headers.Authorization = `Bearer ${response.data.accessToken}`;
         setToken(response.data.accessToken);
         const decoded = jwtDecode(response.data.accessToken);
@@ -74,7 +74,7 @@ const ProductPasien = () => {
 
   const getPasienById = async (uuid) => { // Terima uuid sebagai argumen
     try {
-      const response = await axiosJWT.get(`https://apiuserisena.onrender.com/pasiens/${uuid}`, {
+      const response = await axiosJWT.get(`https://isenaauth.onrender.com/pasiens/${uuid}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

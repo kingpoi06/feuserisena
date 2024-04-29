@@ -48,7 +48,7 @@ const AddPFs = () => {
 
   const refreshToken = async () => {
     try {
-      const response = await axios.get('https://apiuserisena.onrender.com/token');
+      const response = await axios.get('https://isenaauth.onrender.com/token');
       setToken(response.data.accessToken);
       const decoded = jwtDecode(response.data.accessToken);
       setUsername(decoded.username);
@@ -68,7 +68,7 @@ const AddPFs = () => {
   axiosJWT.interceptors.request.use(async(config) => {
     const currentDate = new Date();
     if(expire * 1000 < currentDate.getTime()){
-        const response = await axios.get('https://apiuserisena.onrender.com/token');
+        const response = await axios.get('https://isenaauth.onrender.com/token');
         config.headers.Authorization = `Bearer ${response.data.accessToken}`;
         setToken(response.data.accessToken);
         const decoded = jwtDecode(response.data.accessToken);
@@ -95,7 +95,7 @@ const AddPFs = () => {
         throw new Error("Silahkan lengkapi semua data FORM");
       }
   
-      const response = await axiosJWT.post('https://apiuserisena.onrender.com/pfs', {
+      const response = await axiosJWT.post('https://isenaauth.onrender.com/pfs', {
         unitpelayanan: unitpelayanan,
         keluhanutama: keluhanutama,
         keluhantambahan: keluhantambahan,

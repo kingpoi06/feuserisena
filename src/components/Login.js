@@ -12,7 +12,7 @@ const Login = () => {
   const Auth = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('https://apiisena.site/pasiens/login', {
+      await axios.post('https://isenaauth.onrender.com/login', {
         username: username,
         password: password
       });
