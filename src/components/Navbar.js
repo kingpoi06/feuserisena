@@ -11,7 +11,7 @@ const Navbar = () => {
 
   const Logout = async() => {
     try {
-      await axios.delete(`https://apiuserisena.onrender.com/logout`);
+      await axios.delete(`http://27.112.78.28:5000/logout`);
       navigate("/")
     }catch (error){
       console.log(error);

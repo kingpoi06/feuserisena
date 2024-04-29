@@ -12,7 +12,7 @@ const Login = () => {
   const Auth = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('https://apiuserisena.onrender.com/login', {
+      await axios.post('http://27.112.78.28:5000/login', {
         username: username,
         password: password
       });
@@ -26,7 +26,7 @@ const Login = () => {
     }
   };
 
-  
+
   return (
     <div
       style={{
