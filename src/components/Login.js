@@ -8,23 +8,16 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [msg, setMsg] = useState('');
   const navigate = useNavigate();
-  
 
   const Auth = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('https://isenaauth.onrender.com/login', {
+      await axios.post('https://isenaauth.onrender.com/login', {
         username: username,
         password: password
       });
-      const token = response.data.accessToken;
-      if (token) {
-        // Simpan token ke dalam localStorage atau Cookies untuk digunakan di dashboard
-        localStorage.setItem('accessToken', token);
-        navigate('/dashboard');
-      } else {
-        setMsg('Token not found');
-      }
+      
+      navigate('/dashboard');
     } catch (error) {
       if (error.response) {
         setMsg(error.response.data.msg);
