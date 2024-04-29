@@ -5,6 +5,7 @@ import  jwtDecode  from 'jwt-decode';
 import { IoPerson } from "react-icons/io5";
 import Layout from "./Layout";
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 const Dashboard = () => {
   const [username, setUsername] = useState('');
@@ -12,6 +13,8 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const [expire, setExpire] = useState('');
+  // const refreshToken = Cookies.get('refreshToken');
+  
 
   useEffect(() => {
     refreshToken();
@@ -21,7 +24,22 @@ const Dashboard = () => {
 
   const refreshToken = async () => {
     try {
-      const response = await axios.get('https://apiuserisena.onrender.com/token');
+      // Ambil refresh token dari cookie
+      const refreshToken = Cookies.get('refreshToken');
+      if (!refreshToken) {
+        // Token tidak tersedia, arahkan pengguna untuk login kembali
+        navigate("/");
+        return;
+      }
+  
+      // Kirim permintaan untuk memperbarui token dengan refresh token
+      const response = await axios.get('https://apiuserisena.onrender.com/token', {
+        headers: {
+          Authorization: `Bearer ${refreshToken}`
+        }
+      });
+  
+      // Perbarui state dengan token baru
       setToken(response.data.accessToken);
       const decoded = jwtDecode(response.data.accessToken);
       setUsername(decoded.username);
@@ -30,11 +48,13 @@ const Dashboard = () => {
     } catch (error) {
       console.error('Error refreshing token:', error);
       setLoading(false);
-      if(error.response){
+      if (error.response && error.response.status === 401) {
+        // Unauthorized, arahkan pengguna untuk login kembali
         navigate("/");
       }
     }
   }
+  
 
   const axiosJWT = axios.create();
 

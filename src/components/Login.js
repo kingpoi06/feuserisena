@@ -12,18 +12,15 @@ const Login = () => {
   const Auth = async (e) => {
     e.preventDefault();
     try {
-      // Menggunakan method .data pada respons axios untuk mendapatkan data dari server
       await axios.post('https://apiuserisena.onrender.com/login', {
         username: username,
         password: password
       });
-      // Menggunakan navigate() tanpa .push()
       navigate('/dashboard');
     } catch (error) {
       if (error.response) {
         setMsg(error.response.data.msg);
       } else {
-        // Menambahkan penanganan kesalahan untuk kondisi lain
         console.error('Error:', error.message);
       }
     }
