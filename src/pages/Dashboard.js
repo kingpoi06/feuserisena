@@ -12,7 +12,6 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [expire, setExpire] = useState('');
   const [token, setToken] = useState("");
-  
 
   useEffect(() => {
     refreshToken(); 
@@ -27,8 +26,9 @@ const Dashboard = () => {
   const refreshToken = async () => {
     try {
       const response = await axios.get('https://apiuserisena.onrender.com/token');
-      setToken(response.data.accessToken);
-      const decoded = jwtDecode(response.data.accessToken);
+      const accessToken = response.data.accessToken; // Simpan token dari respons
+      setToken(accessToken); // Simpan token dalam state
+      const decoded = jwtDecode(accessToken);
       setUsername(decoded.username);
       setExpire(decoded.exp);
       setLoading(false);
@@ -46,19 +46,12 @@ const Dashboard = () => {
   axiosJWT.interceptors.request.use(async(config) => {
     const currentDate = new Date();
     if(expire * 1000 < currentDate.getTime()){
-        const response = await axios.get('https://apiuserisena.onrender.com/token');
-        config.headers.Authorization = `Bearer ${response.data.accessToken}`;
-        setToken(response.data.accessToken);
-        const decoded = jwtDecode(response.data.accessToken);
-        setUsername(decoded.username);
-        setExpire(decoded.exp);
-        setLoading(false);
+        config.headers.Authorization = `Bearer ${token}`; // Gunakan token dari state
     }
     return config;
   }, (error) => {
     return Promise.reject(error);
   })
-
 
   return (
     <Layout>
