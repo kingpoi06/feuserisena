@@ -19,22 +19,18 @@ const Dashboard = () => {
 
   const refreshToken = async () => {
     try {
-      // Ambil refresh token dari cookie
       const refreshToken = Cookies.get('refreshToken');
       if (!refreshToken) {
-        // Token tidak tersedia, arahkan pengguna untuk login kembali
         navigate("/");
         return;
       }
 
-      // Kirim permintaan untuk memperbarui token dengan refresh token
       const response = await axios.get('https://apiuserisena.onrender.com/token', {
         headers: {
           Authorization: `Bearer ${refreshToken}`
         }
       });
 
-      // Perbarui state dengan token baru
       setToken(response.data.accessToken);
       const decoded = jwtDecode(response.data.accessToken);
       setUsername(decoded.username);
@@ -44,7 +40,6 @@ const Dashboard = () => {
       console.error('Error refreshing token:', error);
       setLoading(false);
       if (error.response && error.response.status === 401) {
-        // Unauthorized, arahkan pengguna untuk login kembali
         navigate("/");
       }
     }
