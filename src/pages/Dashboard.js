@@ -13,8 +13,14 @@ const Dashboard = () => {
   const [expire, setExpire] = useState('');
 
   useEffect(() => {
-    refreshToken();
-  }, []);   
+    refreshToken(); // Pertama kali, panggil refreshToken saat komponen dipasang
+    
+    const refreshInterval = setInterval(() => {
+      refreshToken(); // Panggil refreshToken secara berkala
+    }, 60000); // Refresh token setiap 1 menit
+    
+    return () => clearInterval(refreshInterval); // Membersihkan interval saat komponen dibongkar
+  }, []);
 
   const refreshToken = async () => {
     try {
@@ -32,14 +38,6 @@ const Dashboard = () => {
 
       const accessToken = response.data.accessToken;
       const decoded = jwtDecode(accessToken);
-
-      // Periksa apakah token akses masih berlaku
-      const currentTimestamp = Math.floor(Date.now() / 1000);
-      if (decoded.exp < currentTimestamp) {
-        navigate("/"); // Arahkan ke halaman login jika token akses kedaluwarsa
-        return;
-      }
-
       setUsername(decoded.username);
       setExpire(decoded.exp);
       setLoading(false);
