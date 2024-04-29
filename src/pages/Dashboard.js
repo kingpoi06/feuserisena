@@ -12,39 +12,25 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [expire, setExpire] = useState('');
   const [token, setToken] = useState("");
-  const [accessToken, setAccessToken] = useState('');
-  const [refreshtoken, setRefreshToken] = useState('');
+  
 
   useEffect(() => {
-    refreshToken(); // Pertama kali, panggil refreshToken saat komponen dipasang
+    refreshToken(); 
     
     const refreshInterval = setInterval(() => {
-      refreshToken(); // Panggil refreshToken secara berkala
-    }, 60000); // Refresh token setiap 1 menit
+      refreshToken();
+    }, 60000); 
     
-    return () => clearInterval(refreshInterval); // Membersihkan interval saat komponen dibongkar
+    return () => clearInterval(refreshInterval); 
   }, []);
 
   const refreshToken = async () => {
     try {
-      const refreshToken = Cookies.get('refreshToken');
-      if (!refreshToken) {
-        navigate("/");
-        return;
-      }
-
-      const response = await axios.get('https://apiuserisena.onrender.com/token', {
-        headers: {
-          Authorization: `Bearer ${refreshToken}`
-        }
-      });
-
-      const accessToken = response.data.accessToken;
-      const decoded = jwtDecode(accessToken);
+      const response = await axios.get('https://apiuserisena.onrender.com/token');
+      setToken(response.data.accessToken);
+      const decoded = jwtDecode(response.data.accessToken);
       setUsername(decoded.username);
       setExpire(decoded.exp);
-      setAccessToken(accessToken);
-      setRefreshToken(refreshtoken);
       setLoading(false);
     } catch (error) {
       console.error('Error refreshing token:', error);
@@ -60,12 +46,19 @@ const Dashboard = () => {
   axiosJWT.interceptors.request.use(async(config) => {
     const currentDate = new Date();
     if(expire * 1000 < currentDate.getTime()){
-        config.headers.Authorization = `Bearer ${accessToken}`;
+        const response = await axios.get('https://apiuserisena.onrender.com/token');
+        config.headers.Authorization = `Bearer ${response.data.accessToken}`;
+        setToken(response.data.accessToken);
+        const decoded = jwtDecode(response.data.accessToken);
+        setUsername(decoded.username);
+        setExpire(decoded.exp);
+        setLoading(false);
     }
     return config;
   }, (error) => {
     return Promise.reject(error);
   })
+
 
   return (
     <Layout>
