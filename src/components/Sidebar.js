@@ -22,17 +22,7 @@ const Sidebar = () => {
 
   const refreshToken = async () => {
     try {
-      const refreshToken = Cookies.get('refreshToken');
-      if (!refreshToken) {
-        navigate("/dashboard");
-        return;
-      }
-
-      const response = await axios.get('https://apiuserisena.onrender.com/token', {
-        headers: {
-          Authorization: `Bearer ${refreshToken}`
-        }
-      });
+      const response = await axios.get('https://apiuserisena.onrender.com/token');
       setToken(response.data.accessToken);
       const decoded = jwtDecode(response.data.accessToken);
       setUsername(decoded.username);
@@ -41,41 +31,29 @@ const Sidebar = () => {
     } catch (error) {
       console.error('Error refreshing token:', error);
       setLoading(false);
-      if (error.response && error.response.status === 401) {
+      if(error.response){
         navigate("/");
       }
     }
   }
 
-  // Intercept request untuk memperbarui token
-  axios.interceptors.request.use(async (config) => {
-    const currentDate = new Date();
-    if (expire * 1000 < currentDate.getTime()) {
-      // Ambil refresh token dari cookie
-      const refreshToken = Cookies.get('refreshToken');
-      if (refreshToken) {
-        // Kirim permintaan untuk memperbarui token dengan refresh token
-        const response = await axios.get('https://apiuserisena.onrender.com/token', {
-          headers: {
-            Authorization: `Bearer ${refreshToken}`
-          }
-        });
+  const axiosJWT = axios.create();
 
-        // Perbarui token dalam config
+  axiosJWT.interceptors.request.use(async(config) => {
+    const currentDate = new Date();
+    if(expire * 1000 < currentDate.getTime()){
+        const response = await axios.get('https://apiuserisena.onrender.com/token');
         config.headers.Authorization = `Bearer ${response.data.accessToken}`;
         setToken(response.data.accessToken);
         const decoded = jwtDecode(response.data.accessToken);
         setUsername(decoded.username);
         setExpire(decoded.exp);
-      } else {
-        // Token tidak tersedia, arahkan pengguna untuk login kembali
-        navigate("/");
-      }
+        setLoading(false);
     }
     return config;
   }, (error) => {
     return Promise.reject(error);
-  });
+  })
 
 
 
