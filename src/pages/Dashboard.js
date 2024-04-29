@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import { IoPerson } from "react-icons/io5";
 import Layout from "./Layout";
 import { useNavigate } from 'react-router-dom';
@@ -8,7 +8,6 @@ import Cookies from 'js-cookie';
 
 const Dashboard = () => {
   const [username, setUsername] = useState('');
-  const [token, setToken] = useState('');
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const [expire, setExpire] = useState('');
@@ -33,6 +32,14 @@ const Dashboard = () => {
 
       const accessToken = response.data.accessToken;
       const decoded = jwtDecode(accessToken);
+
+      // Periksa apakah token akses masih berlaku
+      const currentTimestamp = Math.floor(Date.now() / 1000);
+      if (decoded.exp < currentTimestamp) {
+        navigate("/"); // Arahkan ke halaman login jika token akses kedaluwarsa
+        return;
+      }
+
       setUsername(decoded.username);
       setExpire(decoded.exp);
       setLoading(false);
