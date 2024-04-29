@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import jwtDecode from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
 import { IoPerson } from "react-icons/io5";
 import Layout from "./Layout";
 import { useNavigate } from 'react-router-dom';
@@ -30,7 +30,6 @@ const Dashboard = () => {
           Authorization: `Bearer ${refreshToken}`
         }
       });
-
       setToken(response.data.accessToken);
       const decoded = jwtDecode(response.data.accessToken);
       setUsername(decoded.username);
