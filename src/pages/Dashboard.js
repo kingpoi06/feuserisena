@@ -10,43 +10,30 @@ const Dashboard = () => {
   const [username, setUsername] = useState('');
   const [token, setToken] = useState('');
   const [loading, setLoading] = useState(true);
-  const [expire, setExpire] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
-    refreshToken();
+    fetchAccessToken();
   }, []);
 
-  const refreshToken = async () => {
+  const fetchAccessToken = async () => {
     try {
       const response = await axios.get('https://apiuserisena.onrender.com/token');
       const accessToken = response.data.accessToken;
       setToken(accessToken);
       const decoded = jwtDecode(accessToken);
       setUsername(decoded.username);
-      setExpire(decoded.exp);
       setLoading(false);
     } catch (error) {
-      console.error('Error refreshing token:', error);
+      console.error('Error fetching access token:', error);
       setLoading(false);
-      if (error.response && error.response.status === 401) {
+      if(error.response){
         navigate("/");
       }
     }
   }
 
-  const axiosJWT = axios.create();
-
-  axiosJWT.interceptors.request.use(async (config) => {
-    const currentDate = new Date();
-    if (expire * 1000 < currentDate.getTime()) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  }, (error) => {
-    return Promise.reject(error);
-  });
-
+  
 
   return (
     <Layout>
