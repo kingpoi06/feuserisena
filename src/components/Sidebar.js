@@ -3,7 +3,7 @@ import { NavLink, useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { IoPerson, IoPricetag, IoHome } from 'react-icons/io5';
 import { jwtDecode } from "jwt-decode";
-import Cookies from 'js-cookie';
+// import Cookies from 'js-cookie';
 
 
 const Sidebar = () => {

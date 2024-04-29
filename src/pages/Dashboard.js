@@ -19,9 +19,9 @@ const Dashboard = () => {
 
   const refreshToken = async () => {
     try {
-      const refreshToken = Cookies.get('refreshToken'); // Ambil refresh token dari cookies
+      const refreshToken = Cookies.get('refreshToken');
       if (!refreshToken) {
-        navigate("/"); // Jika tidak ada refresh token, arahkan pengguna untuk login
+        navigate("/");
         return;
       }
 
@@ -40,7 +40,7 @@ const Dashboard = () => {
       console.error('Error refreshing token:', error);
       setLoading(false);
       if (error.response && error.response.status === 401) {
-        navigate("/"); // Jika token tidak valid atau sudah kedaluwarsa, arahkan pengguna untuk login
+        navigate("/");
       }
     }
   }
