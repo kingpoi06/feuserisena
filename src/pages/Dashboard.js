@@ -4,24 +4,17 @@ import { jwtDecode } from 'jwt-decode';
 import { IoPerson } from "react-icons/io5";
 import Layout from "./Layout";
 import { useNavigate } from 'react-router-dom';
-import Cookies from 'js-cookie';
 
 const Dashboard = () => {
   const [username, setUsername] = useState('');
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const [expire, setExpire] = useState('');
-  const [token, setToken] = useState("");
-  
+  const [token, setToken] = useState('');
 
   useEffect(() => {
-    refreshToken(); 
-    
-    const refreshInterval = setInterval(() => {
-      refreshToken();
-    }, 60000); 
-    
-    return () => clearInterval(refreshInterval); 
+    refreshToken();
+
   }, []);
 
   const refreshToken = async () => {
@@ -35,7 +28,7 @@ const Dashboard = () => {
     } catch (error) {
       console.error('Error refreshing token:', error);
       setLoading(false);
-      if(error.response){
+      if (error.response && error.response.status === 401) {
         navigate("/");
       }
     }
@@ -43,22 +36,21 @@ const Dashboard = () => {
 
   const axiosJWT = axios.create();
 
-  axiosJWT.interceptors.request.use(async(config) => {
+  axiosJWT.interceptors.request.use(async (config) => {
     const currentDate = new Date();
-    if(expire * 1000 < currentDate.getTime()){
-        const response = await axios.get('https://isenaauth.onrender.com/token');
-        config.headers.Authorization = `Bearer ${response.data.accessToken}`;
-        setToken(response.data.accessToken);
-        const decoded = jwtDecode(response.data.accessToken);
-        setUsername(decoded.username);
-        setExpire(decoded.exp);
-        setLoading(false);
+    if (expire * 1000 < currentDate.getTime()) {
+      const response = await axios.get('https://isenaauth.onrender.com/token');
+      config.headers.Authorization = `Bearer ${response.data.accessToken}`;
+      setToken(response.data.accessToken);
+      const decoded = jwtDecode(response.data.accessToken);
+      setUsername(decoded.username);
+      setExpire(decoded.exp);
+      setLoading(false);
     }
     return config;
   }, (error) => {
     return Promise.reject(error);
-  })
-
+  });
 
   return (
     <Layout>
