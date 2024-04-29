@@ -21,7 +21,7 @@ const Dashboard = () => {
     try {
       const refreshToken = Cookies.get('refreshToken');
       if (!refreshToken) {
-        navigate("/");
+        navigate("/dashboard");
         return;
       }
 

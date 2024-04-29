@@ -24,7 +24,7 @@ const Sidebar = () => {
     try {
       const refreshToken = Cookies.get('refreshToken');
       if (!refreshToken) {
-        navigate("/");
+        navigate("/dashboard");
         return;
       }
 
