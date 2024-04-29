@@ -12,7 +12,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [expire, setExpire] = useState('');
   const [token, setToken] = useState("");
-  const [accesstoken, setAccessToken] = useState('');
+  const [accessToken, setAccessToken] = useState('');
   const [refreshtoken, setRefreshToken] = useState('');
 
   useEffect(() => {
@@ -43,7 +43,7 @@ const Dashboard = () => {
       const decoded = jwtDecode(accessToken);
       setUsername(decoded.username);
       setExpire(decoded.exp);
-      setAccessToken(accesstoken);
+      setAccessToken(accessToken);
       setRefreshToken(refreshtoken);
       setLoading(false);
     } catch (error) {
