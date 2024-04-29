@@ -27,8 +27,9 @@ const Dashboard = () => {
   const refreshToken = async () => {
     try {
       const response = await axios.get('https://apiuserisena.onrender.com/token');
-      setToken(response.data.accessToken);
-      const decoded = jwtDecode(response.data.accessToken);
+      const accessToken = response.data.accessToken; // Mendapatkan access token dari response
+      setToken(accessToken); // Menyimpan access token ke dalam state token
+      const decoded = jwtDecode(accessToken);
       setUsername(decoded.username);
       setExpire(decoded.exp);
       setLoading(false);
@@ -46,12 +47,7 @@ const Dashboard = () => {
   axiosJWT.interceptors.request.use(async(config) => {
     const currentDate = new Date();
     if(expire * 1000 < currentDate.getTime()){
-        const response = await axios.get('https://apiuserisena.onrender.com/token');
-        config.headers.Authorization = `Bearer ${response.data.accessToken}`;
-        setToken(response.data.accessToken);
-        const decoded = jwtDecode(response.data.accessToken);
-        setUsername(decoded.username);
-        setExpire(decoded.exp);
+        config.headers.Authorization = `Bearer ${token}`; // Menggunakan access token dari state token
         setLoading(false);
     }
     return config;
