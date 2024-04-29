@@ -1,56 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { jwtDecode } from 'jwt-decode';
 import { IoPerson } from "react-icons/io5";
 import Layout from "./Layout";
 import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
+  const [accessToken, setAccessToken] = useState('');
+  const [refreshToken, setRefreshToken] = useState('');
   const [username, setUsername] = useState('');
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const [expire, setExpire] = useState('');
-  const [token, setToken] = useState('');
 
   useEffect(() => {
-    refreshToken();
-
-  }, []);
-
-  const refreshToken = async () => {
-    try {
-      const response = await axios.get('https://isenaauth.onrender.com/token', { withCredentials: true });
-      setToken(response.data.accessToken);
-      const decoded = jwtDecode(response.data.accessToken);
-      setUsername(decoded.username);
-      setExpire(decoded.exp);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error refreshing token:', error);
-      setLoading(false);
-      if (error.response && error.response.status === 401) {
-        navigate("/");
+    const fetchTokens = async () => {
+      try {
+        const response = await axios.get('https://isenaauth.onrender.com/token');
+        const { accessToken, refreshToken } = response.data;
+        setAccessToken(accessToken);
+        setRefreshToken(refreshToken);
+        // Jika username juga didapatkan dari endpoint, gunakan ini untuk menyetelnya
+        // setUsername(response.data.username);
+      } catch (error) {
+        console.error('Error fetching tokens:', error);
+        // Lakukan penanganan kesalahan sesuai kebutuhan
       }
-    }
-  }
+    };
 
-  const axiosJWT = axios.create();
-
-  axiosJWT.interceptors.request.use(async (config) => {
-    const currentDate = new Date();
-    if (expire * 1000 < currentDate.getTime()) {
-      const response = await axios.get('https://isenaauth.onrender.com/token', { withCredentials: true });
-      config.headers.Authorization = `Bearer ${response.data.accessToken}`;
-      setToken(response.data.accessToken);
-      const decoded = jwtDecode(response.data.accessToken);
-      setUsername(decoded.username);
-      setExpire(decoded.exp);
-      setLoading(false);
-    }
-    return config;
-  }, (error) => {
-    return Promise.reject(error);
-  });
+    fetchTokens();
+  }, []);
 
   return (
     <Layout>
@@ -78,6 +54,10 @@ const Dashboard = () => {
           <h2 className="subtitle">
             Selamat datang di <strong>ISENA FKTP</strong>. Website ini masih dalam tahap uji coba.
           </h2>
+          <div>
+            <p>Access Token: {accessToken}</p>
+            <p>Refresh Token: {refreshToken}</p>
+          </div>
         </section>
       </div>
     </Layout>
